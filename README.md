@@ -1,5 +1,10 @@
 # Nginx HTTP2 Push Generator
 
+[![Travis Build
+Status](https://travis-ci.org/vbrandl/nginx-http2-push-generator.svg?branch=master)](https://travis-ci.org/vbrandl/nginx-http2-push-generator)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/vbrandl/nginx-http2-push-generator/blob/master/LICENSE-MIT)
+[![License](https://img.shields.io/badge/license-Apache-green.svg)](https://github.com/vbrandl/nginx-http2-push-generator/blob/master/LICENSE-APACHE)
+
 Since version 1.13.9 from 2018-02-20, the [nginx](https://www.nginx.com/) web server supports HTTP2
 server push. This can be a pain to configure since for every file the list of files to push has to
 be configured.
@@ -71,3 +76,10 @@ http2_push /style2.css;
 http2_push /style3.css;
 http2_push /prefix/foo.js;
 ```
+
+## License
+
+nginx_http2_push_generator is licensed under either of the following, at your option:
+
+ * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
