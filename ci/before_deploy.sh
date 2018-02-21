@@ -18,10 +18,10 @@ main() {
     test -f Cargo.lock || cargo generate-lockfile
 
     # TODO Update this to build the artifacts that matter to you
-    cross rustc --bin nginx_http2_push_generator --target $TARGET --release -- -C lto
+    cross rustc --bin $CRATE_NAME --target $TARGET --release -- -C lto
 
     # TODO Update this to package the right artifacts
-    cp target/$TARGET/release/nginx_http2_push_generator $stage/ || cp target/$TARGET/release/nginx_http2_push_generator.exe $stage/
+    cp target/$TARGET/release/$CRATE_NAME $stage/ || cp target/$TARGET/release/$CRATE_NAME.exe $stage/
 
     cd $stage
     tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
