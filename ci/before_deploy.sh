@@ -21,7 +21,7 @@ main() {
     cross rustc --bin nginx_http2_push_generator --target $TARGET --release -- -C lto
 
     # TODO Update this to package the right artifacts
-    cp target/$TARGET/release/nginx_http2_push_generator $stage/
+    cp target/$TARGET/release/nginx_http2_push_generator $stage/ || cp target/$TARGET/release/nginx_http2_push_generator.exe $stage/
 
     cd $stage
     tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
