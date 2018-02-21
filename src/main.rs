@@ -10,6 +10,7 @@ use html5ever::parse_document;
 use html5ever::rcdom::{Handle, NodeData, RcDom};
 use html5ever::tendril::TendrilSink;
 
+const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
 const ATTRS: &[&str] = &["href", "src"];
 
 fn create_config(handle: Handle, prefix: &str, exts: &[&str]) {
@@ -48,7 +49,7 @@ fn create_config(handle: Handle, prefix: &str, exts: &[&str]) {
 
 fn main() {
     let matches = clap_app!(nginx_http2_push_generator =>
-                            (version: "0.1.0")
+                            (version: VERSION.unwrap_or("unknown"))
                             (author: "Valentin B. <mail@vbrandl.net>")
                             (about: "Parse a HTML file and generate a HTTP2 push configuration for nginx")
                             (@arg PREFIX: -p --prefix +takes_value "Set a path prefix. Should be the path where the file is located. Defaults to \"/\"")
