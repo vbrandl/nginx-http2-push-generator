@@ -1,18 +1,40 @@
 language: rust
+
 rust:
-  - stable
+- stable
 
 cache: cargo
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y binutlis
+
 before_cache:
-  - chmod -R a+r $HOME/.cargo
+- chmod -R a+r $HOME/.cargo
 
 notifications:
   email:
-      on_success: never
+    on_success: never
 
 branches:
   only:
-    # release tags
-    - /^v\d+\.\d+\.\d+.*$/
-    - master
-    - develop
+  - "/^v\\d+\\.\\d+\\.\\d+.*$/"
+  - master
+  - develop
+
+script:
+  - cargo build --release --verbose; cargo test --release --verbose
+
+install:
+  - cargo build --release --verbose
+
+deploy:
+  before_deploy:
+    - strip ./target/release/nginx_http2_push_generator
+  provider: releases
+  api_key:
+    secure: pXz219rG3Qit/6Bq+TxguyKjCgzJO3vp4g4t+j/vuf9tqHXvTDBAYU0tV+ehuqilPSh0TGr+sZk3dtUyWkfoCJR1BeF7LQcaAqOhtoYjTVUJ9rCmpN8m1iokGfO12d2/3PwkyI/0UP3NMN9fPq19q/66JVD8m6md5O52kztKKTgJm144owOwTCmTVDXEiIvc9RXdYncVFNtNPkq8jKqGfQsy+/BAhBCR5AaQg5nWKyhyFj1ZRkf3hnbCfpiyTXzU5FaN5bSwa0fXf8ni5ueNpG7SxNqKTBXy58OSCmhIQqRP6YcCRE3YweRhZqjl4NN1myBxhdxbGeh776SzX2YjIpygu6xSs0f+MequXISfNPLtl2RLqoViC0gzcc0xNevOedXde4TJ8+50oP/epmQCavflDdQbHswWW7sZM1D0+0DPXf0z3EaLbQj+rr8PSGJyyrm6NtLjBJ0Wi5Pn/bgZetstmJ9zVlxUec+T6ojqB7MsPpiwjYJENA2jfzuV8e9fj8sjp66HqntULftkL3Po2K3UPZqfbotUQS6wuPDtjLGP8+pf2BHQYAi4f8tGGFri23lOrQTZqUxlwuGvnV5lxp3mVUPUPKBHQ/QmfC23o1D+/TIkz4NvXOFpDFI8GT4gZxRVQPouxTFSHMW+dqdkql62u+jt6T2ToaB/BkZKObk=
+  file: ./target/release/nginx_http2_push_generator
+  skip_cleanup: true
+  on:
+    tags: true
