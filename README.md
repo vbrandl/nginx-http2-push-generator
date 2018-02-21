@@ -19,6 +19,18 @@ Currently the following attributes are checked:
  * `href`
  * `src`
 
+## Building
+
+I tested building the binary using the current stable (`1.24.0`) and nightly (`1.25.0-nightly (3ec5a99aa 2018-02-14)`)
+Rust compiler but older versions should work fine, too.
+
+To build the latest stable version of the config generator, you need to install Rust and cargo (preferably using
+rustup), clone this repository, check out the `master` branch and run the following command:
+
+```
+$ cargo build --release
+```
+
 ## Usage
 
 ```
