@@ -36,6 +36,9 @@ rustup), clone this repository, check out the `master` branch and run the follow
 $ cargo build --release
 ```
 
+Precompiled binaries for a variety of targets can be found on the [release
+page](https://github.com/vbrandl/nginx-http2-push-generator/releases)
+
 ## Usage
 
 ```
