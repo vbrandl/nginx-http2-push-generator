@@ -1,0 +1,18 @@
+language: rust
+rust:
+  - stable
+
+cache: cargo
+before_cache:
+  - chmod -R a+r $HOME/.cargo
+
+notifications:
+  email:
+      on_success: never
+
+branches:
+  only:
+    # release tags
+    - /^v\d+\.\d+\.\d+.*$/
+    - master
+    - develop
