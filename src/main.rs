@@ -28,7 +28,7 @@ fn create_config(handle: Handle, prefix: &str, exts: &[&str]) {
                 && !attr.value.contains("://")
                 && exts.iter().any(|e| attr.value.ends_with(e))
             {
-                print!("    http2_push ");
+                print!("http2_push ");
                 if !attr.value.starts_with('/') {
                     print!("{}/", prefix);
                 }
@@ -76,13 +76,6 @@ fn main() {
         dom.errors
             .iter()
             .for_each(|e| writeln!(stderr, "{}", e).unwrap());
-    } else {
-        println!(
-            "location = {}/{} {{",
-            pref,
-            if input == "-" { "file.html" } else { input }
-        );
-        create_config(dom.document, pref, &exts);
-        println!("}}");
     }
+    create_config(dom.document, pref, &exts);
 }
