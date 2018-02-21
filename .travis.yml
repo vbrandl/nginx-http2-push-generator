@@ -1,13 +1,12 @@
+dist: trusty
+
 language: rust
 
-rust:
-- stable
+services: docker
+
+sudo: required
 
 cache: cargo
-
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y binutlis
 
 before_cache:
 - chmod -R a+r $HOME/.cargo
@@ -22,19 +21,48 @@ branches:
   - master
   - develop
 
-script:
-  - cargo build --release --verbose; cargo test --release --verbose
+before_install:
+- set -e
+- rustup self update
 
 install:
-  - cargo build --release --verbose
+- sh ci/install.sh
+- source ~/.cargo/env || true
+
+script:
+- bash ci/script.sh
+
+after_script: set +e
+
+env:
+  global:
+  - CRATE_NAME=nginx_http2_push_generator
+
+matrix:
+  include:
+  - env: TARGET=i686-unknown-linux-gnu
+  - env: TARGET=i686-unknown-linux-musl
+  - env: TARGET=x86_64-unknown-linux-gnu
+  - env: TARGET=x86_64-unknown-linux-musl
+  - env: TARGET=i686-apple-darwin
+    os: osx
+  - env: TARGET=x86_64-apple-darwin
+    os: osx
+  - env: TARGET=i686-unknown-freebsd DISABLE_TESTS=1
+  - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
+  - env: TARGET=x86_64-unknown-netbsd DISABLE_TESTS=1
+  - env: TARGET=x86_64-pc-windows-gnu
+
+before_deploy:
+- sh ci/before_deploy.sh
 
 deploy:
-  before_deploy:
-    - strip ./target/release/nginx_http2_push_generator
   provider: releases
   api_key:
-    secure: pXz219rG3Qit/6Bq+TxguyKjCgzJO3vp4g4t+j/vuf9tqHXvTDBAYU0tV+ehuqilPSh0TGr+sZk3dtUyWkfoCJR1BeF7LQcaAqOhtoYjTVUJ9rCmpN8m1iokGfO12d2/3PwkyI/0UP3NMN9fPq19q/66JVD8m6md5O52kztKKTgJm144owOwTCmTVDXEiIvc9RXdYncVFNtNPkq8jKqGfQsy+/BAhBCR5AaQg5nWKyhyFj1ZRkf3hnbCfpiyTXzU5FaN5bSwa0fXf8ni5ueNpG7SxNqKTBXy58OSCmhIQqRP6YcCRE3YweRhZqjl4NN1myBxhdxbGeh776SzX2YjIpygu6xSs0f+MequXISfNPLtl2RLqoViC0gzcc0xNevOedXde4TJ8+50oP/epmQCavflDdQbHswWW7sZM1D0+0DPXf0z3EaLbQj+rr8PSGJyyrm6NtLjBJ0Wi5Pn/bgZetstmJ9zVlxUec+T6ojqB7MsPpiwjYJENA2jfzuV8e9fj8sjp66HqntULftkL3Po2K3UPZqfbotUQS6wuPDtjLGP8+pf2BHQYAi4f8tGGFri23lOrQTZqUxlwuGvnV5lxp3mVUPUPKBHQ/QmfC23o1D+/TIkz4NvXOFpDFI8GT4gZxRVQPouxTFSHMW+dqdkql62u+jt6T2ToaB/BkZKObk=
-  file: ./target/release/nginx_http2_push_generator
+    secure: n1WQqFMz8l+a3aJOCVawPOMLSC6PtQybgeDliDvo4DPf4IiGpgn3Xe6XNhNX2IGoqDsQb1xXD8nVneAfRBOgnTb0n9DH4JA2oq9s6x/Q1pTwWSXDT/I7U6JFaKsu01mPQEJsBz3CNNHmbJiq4x/7D+xAhGlGayosJDMuejAuFO3QVgzTdTZSYRKBPeOuhPpI6jF4KCggHgQAbIDMdSmxUPp2d6u6IVh5YJFMrdBjaeHvAWvs1sWucwdpc4qLnpqC+dqSF0mBQWv2oP0uc5VHNyM5OMsZVJitxLYw/BQo32o2HeEQORmzVg5i763zshsZ9mgywuJMP+LKiSvFDacimvqCuLyejaZM13xRioj0KHnb0wdwCu/xtkjizFLI8AI1HJCrTm04med+fszrHMVjeBShEQiI/DZjWHdZr9BR0t9mTAT/T2mngWyYu4B0+HxAbP+qspDHCkPRh1WF9oO+cJ08i/mt8T0tM6NkphrguEh69eGEZ36vjeGMXg94KyotgspWj9VU2sFcRbj5uj9MicqcEt48J9DaI9X7t14+Q9L0RtkqaXWVFtFdUusihl/QRFxE2c6ssQPt0muTHqYgLyWJDoeu6yXaU4fg9sLsqaHcLAmykc+hai87Effepq/TbUF+NqqhFQWRlewmnN7h50tGsqv3GZjOeF4zpCT/tdA=
+  file_glob: true
+  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
   skip_cleanup: true
   on:
+    condition: $TRAVIS_RUST_VERSION = stable
     tags: true
